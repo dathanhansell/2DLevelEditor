@@ -7,4 +7,9 @@
         <file>textures/static/tile0.png</file>
         <file>textures/static/tile1.png</file>
     </qresource>
+    <qresource prefix="/interactable">
+        <file>textures/interactable/tile0.png</file>
+        <file>textures/interactable/tile1.png</file>
+    </qresource>
+    <qresource prefix="/entities"/>
 </RCC>

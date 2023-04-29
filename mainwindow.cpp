@@ -10,6 +10,9 @@
 #include <QPixmap>
 #include <QListWidget>
 #include <QListWidgetItem>
+#include <QResource>
+#include <QFileInfo>
+#include <QDirIterator>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -24,9 +27,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     blockTypeComboBox = new QComboBox(sidebar);
     // Add block types to the combo box
-    blockTypeComboBox->addItem("Block Type 1");
-    blockTypeComboBox->addItem("Block Type 2");
-    blockTypeComboBox->addItem("Block Type 3");
+    blockTypeComboBox->addItem("Static");
+    blockTypeComboBox->addItem("Interactable");
+    blockTypeComboBox->addItem("Entity");
     sidebarLayout->addWidget(blockTypeComboBox);
 
     blockListWidget = new QListWidget(sidebar);
@@ -63,41 +66,47 @@ MainWindow::~MainWindow()
     delete m_openglScene;
 }
 
+
+int getFileCountInResource(const QString &prefix) {
+    QDirIterator it(":", QDirIterator::Subdirectories);
+    int count = 0;
+    while (it.hasNext()) {
+        it.next();
+        QFileInfo fileInfo = it.fileInfo();
+        if (fileInfo.isFile() && fileInfo.absoluteFilePath().startsWith(prefix)) {
+            count++;
+        }
+    }
+    return count;
+}
+void loadTileTypeItems(QString prefix, QListWidget *blockListWidget){
+
+    QDir directory(":/"+prefix+"/textures/"+prefix+"/");
+    QStringList resourceList = directory.entryList(QStringList("*.png"));
+    for (const QString &filePath : resourceList) {
+        QPixmap pixmap(":/"+prefix+"/textures/"+prefix+"/"+filePath);
+        if (pixmap.isNull()) {
+            qDebug() << "Failed to load pixmap from:" << filePath;
+        }
+        QIcon icon(pixmap);
+        QString blockName = QFileInfo(filePath).baseName();
+        QListWidgetItem *item = new QListWidgetItem(icon, blockName, blockListWidget);
+    }
+}
+
 void MainWindow::on_blockTypeComboBox_currentIndexChanged(int index)
 {
     blockListWidget->clear();
-
-    // Load different blocks based on the selected block type
+    int tileCount = 0;
     switch (index) {
     case 0:
-        // Add dummy block images and names for Block Type 1
-        for (int i = 0; i < 10; ++i) {
-            QPixmap dummyPixmap(32, 32);
-            dummyPixmap.fill(Qt::gray);
-            QIcon dummyIcon(dummyPixmap);
-            QString blockName = QString("Block Type 1 - %1").arg(i + 1);
-            QListWidgetItem *item = new QListWidgetItem(dummyIcon, blockName, blockListWidget);
-        }
+        loadTileTypeItems("static",blockListWidget);
         break;
     case 1:
-        // Add dummy block images and names for Block Type 2
-        for (int i = 0; i < 10; ++i) {
-            QPixmap dummyPixmap(32, 32);
-            dummyPixmap.fill(Qt::green);
-            QIcon dummyIcon(dummyPixmap);
-            QString blockName = QString("Block Type 2 - %1").arg(i + 1);
-            QListWidgetItem *item = new QListWidgetItem(dummyIcon, blockName, blockListWidget);
-        }
+        loadTileTypeItems("interactable",blockListWidget);
         break;
     case 2:
-        // Add dummy block images and names for Block Type 3
-        for (int i = 0; i < 10; ++i) {
-            QPixmap dummyPixmap(32, 32);
-            dummyPixmap.fill(Qt::blue);
-            QIcon dummyIcon(dummyPixmap);
-            QString blockName = QString("Block Type 3 - %1").arg(i + 1);
-            QListWidgetItem *item = new QListWidgetItem(dummyIcon, blockName, blockListWidget);
-        }
+        loadTileTypeItems("entities",blockListWidget);
         break;
     default:
         break;

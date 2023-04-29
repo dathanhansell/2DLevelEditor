@@ -30,10 +30,12 @@ void Drawable::setPosition(const QVector3D &position)
 {
     position_ = position;
 }
+QVector3D Drawable::getPosition() const{
+    return position_;
+}
 
 void Drawable::draw(const QMatrix4x4 &projection, const QMatrix4x4 &view)
 {
-    qDebug() << "drawing";
     if (shader_ && shader_->bind())
     {
         QMatrix4x4 model;

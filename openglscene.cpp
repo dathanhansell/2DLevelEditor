@@ -3,12 +3,21 @@
 #include <cmath>
 #include "tilemesh.h"
 #include "gridmesh.h"
-
+OpenGLScene::OpenGLScene(QWidget *parent) : QOpenGLWidget(parent)
+{
+    setFocusPolicy(Qt::StrongFocus);
+    installEventFilter(this); // Install the event filter
+}
 OpenGLScene::~OpenGLScene() {
     makeCurrent();
+    setFocusPolicy(Qt::StrongFocus);
     for (auto& obj : drawableObjects) {
         delete obj;
     }
+    for (auto& tile : tileList) {
+        delete tile;
+    }
+    delete box2dWorld;
     doneCurrent();
 }
 QVector3D OpenGLScene::screenToWorld(const QVector2D &screenPos) {
@@ -32,11 +41,14 @@ void OpenGLScene::mousePressEvent(QMouseEvent *e) {
     if (e->button() == Qt::LeftButton) {
         QVector3D worldPos = screenToWorld(QVector2D(e->position()));
         TileMesh *tilemesh = new TileMesh();
-        Drawable *newTile = new Drawable(shaderManager.getShader("texture"), new QOpenGLTexture(QImage(":/textures/cube.png").mirrored()), tilemesh);
-        newTile->setPosition(worldPos);
-        drawableObjects.push_back(newTile);
+        Drawable *newTileDrawable = new Drawable(shaderManager.getShader("texture"), new QOpenGLTexture(QImage(":/textures/cube.png").mirrored()), tilemesh);
+        b2Vec2 tilePos(worldPos.x(), worldPos.y());
+        b2Vec2 tileSize(1, 1);
+        Tile *newTile = new Tile(newTileDrawable, box2dWorld, tilePos, tileSize);
+        tileList.push_back(newTile);
+        drawableObjects.push_back(newTile->getDrawable());
         update();
-        qDebug() << "new tile at " <<worldPos;
+        qDebug() << "new tile at " << worldPos;
     }
     else if(e->button() == Qt::RightButton){
 
@@ -45,7 +57,31 @@ void OpenGLScene::mousePressEvent(QMouseEvent *e) {
     }
 
 }
+bool OpenGLScene::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress) {
+        keyPressEvent(static_cast<QKeyEvent *>(event));
+        return true;
+    }
+    if (event->type() == QEvent::KeyRelease) {
+        keyReleaseEvent(static_cast<QKeyEvent *>(event));
+        return true;
+    }
+    return QOpenGLWidget::eventFilter(obj, event);
+}
+void OpenGLScene::keyPressEvent(QKeyEvent *event) {
+    qDebug() << "trying keypress";
+    if (playerTile) {
+        qDebug() << "trying keypress";
+        playerTile->handleKeyEvent(event);
+    }
+}
 
+void OpenGLScene::keyReleaseEvent(QKeyEvent *event) {
+    if (playerTile) {
+        playerTile->handleKeyEvent(event);
+    }
+}
 void OpenGLScene::mouseMoveEvent(QMouseEvent *e) {
     if(e->buttons() == Qt::RightButton){
 
@@ -55,14 +91,34 @@ void OpenGLScene::mouseMoveEvent(QMouseEvent *e) {
         update();
     }
 }
+void OpenGLScene::updateScene() {
+    // Update the tiles
+    float deltaTime = updateTimer->interval() / 1000.0f;
+    box2dWorld->Step(deltaTime, 6, 2);
+    for (Tile* tile: tileList) {
+        qDebug() << "tile update";
+        tile->update(deltaTime);
+    }
+    // Check for collisions
+    for (Tile* tile: tileList) {
+        if (InteractableTile* itile = dynamic_cast<InteractableTile*>(tile)) {
+            for (Tile* other: tileList) {
+                if (tile != other && tile->isCollidingWith(other)) {
+                    itile->onCollision(other);
+                }
+            }
+        }
+    }
 
+    update();
+}
 void OpenGLScene::initializeGL() {
     cameraPosition = QVector3D(0.0, 0.0, 5.0);
     initializeOpenGLFunctions();
     glClearColor(0, .4f, .9f, 1);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-
+    box2dWorld = new b2World(b2Vec2(0, -4));
     TileMesh *tilemesh = new TileMesh();
     GridMesh *gridmesh = new GridMesh();
     shaderManager.addShader("texture", ":/shaders/vtexture.glsl", ":/shaders/ftexture.glsl");
@@ -72,6 +128,15 @@ void OpenGLScene::initializeGL() {
 
     //drawableObjects.push_back(tileObject);
     drawableObjects.push_back(gridObject);
+    Drawable *playerDrawable = new Drawable(shaderManager.getShader("texture"), new QOpenGLTexture(QImage(":/textures/cube.png").mirrored()), tilemesh);
+    playerTile = new PlayerTile(playerDrawable, box2dWorld, b2Vec2(0, 0), b2Vec2(1, 1));
+    drawableObjects.push_back(playerTile->getDrawable());
+    tileList.push_back(playerTile);
+    updateTimer = new QTimer(this);
+    qDebug() << "timer";
+    connect(updateTimer, &QTimer::timeout, this, &OpenGLScene::updateScene);
+    updateTimer->start(16); // approximate 60fps updates
+    qDebug()<<updateTimer->isActive();
 }
 
 void OpenGLScene::resizeGL(int w, int h) {
@@ -94,6 +159,7 @@ void OpenGLScene::paintGL() {
     QMatrix4x4 view;
     view.translate(-cameraPosition);
 
+    // Draw drawable objects
     for (auto &obj : drawableObjects)
     {
         obj->draw(projection, view);

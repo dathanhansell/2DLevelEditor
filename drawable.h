@@ -17,6 +17,7 @@ public:
     void setTexture(QOpenGLTexture *texture);
     void setGeometry(Mesh *mesh);
     void setPosition(const QVector3D &position);
+    QVector3D getPosition() const;
 
     virtual void draw(const QMatrix4x4 &projection, const QMatrix4x4 &view);
 

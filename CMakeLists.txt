@@ -17,12 +17,14 @@ link_directories("C:\\Users\\Dathan\\Code Projects\\box2d\\build\\bin\\Debug")
 
 set(SOURCE_FILES main.cpp mainwindow.h mainwindow.cpp
 openglscene.h openglscene.cpp
-box2dworld.h box2dworld.cpp
 shadermanager.h shadermanager.cpp
 drawable.h drawable.cpp
 mesh.h mesh.cpp tilemesh.h tilemesh.cpp
 gridmesh.h gridmesh.cpp
-
+tile.h tile.cpp interactabletile.h interactabletile.cpp
+playertile.h playertile.cpp
+camera.h camera.cpp
+inputhandler.h inputhandler.cpp
 )
 
 set(RESOURCE_FILES shaders.qrc textures.qrc)
