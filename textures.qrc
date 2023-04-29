@@ -2,9 +2,20 @@
     <qresource prefix="/">
         <file>textures/cube.png</file>
         <file>textures/white.png</file>
+        <file>textures/mario.png</file>
     </qresource>
     <qresource prefix="/static">
-        <file>textures/static/tile0.png</file>
+        <file>textures/static/brownBlock1.png</file>
+        <file>textures/static/brownBlock2.png</file>
+        <file>textures/static/greenRock.png</file>
+        <file>textures/static/greyBrick.png</file>
+        <file>textures/static/mushroomTopLeft.png</file>
+        <file>textures/static/mushroomTopMid.png</file>
+        <file>textures/static/mushroomTopRight.png</file>
+        <file>textures/static/pipeLeft.png</file>
+        <file>textures/static/pipeRight.png</file>
+        <file>textures/static/pipeTopLeft.png</file>
+        <file>textures/static/pipeTopRight.png</file>
         <file>textures/static/tile1.png</file>
     </qresource>
     <qresource prefix="/interactable">

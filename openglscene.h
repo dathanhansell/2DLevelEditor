@@ -17,6 +17,8 @@
 #include <QTimer>
 #include "camera.h"
 #include "inputhandler.h"
+#include "texturemanager.h"
+#include "tilefactory.h"
 
 
 class OpenGLScene : public QOpenGLWidget, protected QOpenGLFunctions
@@ -26,7 +28,7 @@ class OpenGLScene : public QOpenGLWidget, protected QOpenGLFunctions
 public:
     using QOpenGLWidget::QOpenGLWidget;
     explicit OpenGLScene(QWidget *parent = nullptr);
-    //void setSelectedBlockType(int index);
+    void setSelectedTexture(const QString& textureName);
     ~OpenGLScene();
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
@@ -34,7 +36,7 @@ public:
 protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseMoveEvent(QMouseEvent *e) override;
-
+    void wheelEvent(QWheelEvent *e) override;
 
     void initializeGL() override;
     void resizeGL(int w, int h) override;
@@ -43,9 +45,12 @@ protected:
 private slots:
     void updateScene();
 private:
+    float zoomLevel =1;
     ShaderManager shaderManager;
+    TextureManager textureManager;
     QVector2D prevMousePosition;
-    std::vector<Drawable *> drawableObjects;
+    Drawable* grid;
+    QString selectedTexture;
     b2World *box2dWorld;
     std::vector<Tile *> tileList;
     QMatrix4x4 projection;
@@ -53,8 +58,6 @@ private:
     QVector2D mousePressPosition;
     QTimer *updateTimer;
     PlayerTile *playerTile;
-    Camera camera;
-    InputHandler inputHandler;
+    TileFactory *tileFactory;
 };
-
 #endif // MAINWIDGET_H

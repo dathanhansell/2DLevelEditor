@@ -8,11 +8,14 @@ uniform sampler2D texture;
 
 varying vec2 v_texcoord;
 
-//! [0]
 void main()
 {
     // Set fragment color from texture
-    gl_FragColor = texture2D(texture, v_texcoord);
-}
-//! [0]
+    vec4 texColor = texture2D(texture, v_texcoord);
 
+    // Use alpha channel information for transparency
+    if (texColor.r > 0.99 &&texColor.g > 0.99 && texColor.b > 0.99)
+        discard;
+
+    gl_FragColor = texColor;
+}

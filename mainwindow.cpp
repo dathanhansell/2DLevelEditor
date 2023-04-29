@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
     blockTypeComboBox->addItem("Static");
     blockTypeComboBox->addItem("Interactable");
     blockTypeComboBox->addItem("Entity");
+    blockTypeComboBox->addItem("Background");
     sidebarLayout->addWidget(blockTypeComboBox);
 
     blockListWidget = new QListWidget(sidebar);
@@ -108,6 +109,9 @@ void MainWindow::on_blockTypeComboBox_currentIndexChanged(int index)
     case 2:
         loadTileTypeItems("entities",blockListWidget);
         break;
+    case 3:
+        loadTileTypeItems("background",blockListWidget);
+        break;
     default:
         break;
     }
@@ -118,7 +122,7 @@ void MainWindow::on_blockTypeComboBox_currentIndexChanged(int index)
 void MainWindow::on_blockListWidget_itemClicked(QListWidgetItem *item)
 {
     qDebug() << item->text();
-    // Get the selected block type and set it
+    m_openglScene->setSelectedTexture(item->text());
 }
 
 void MainWindow::on_playButton_clicked()

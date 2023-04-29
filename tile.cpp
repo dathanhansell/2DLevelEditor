@@ -33,7 +33,6 @@ b2Body* Tile::getBody() const{
 void Tile::update(float deltaTime) {
     qDebug() << "tile base update";
     if (drawable) {
-        qDebug() << "Change Pos";
         drawable->setPosition(QVector3D(body->GetPosition().x, body->GetPosition().y, 0));
     }
 }
