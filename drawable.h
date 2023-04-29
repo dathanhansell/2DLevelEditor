@@ -1,4 +1,3 @@
-// drawableobject.h
 #ifndef DRAWABLE_H
 #define DRAWABLE_H
 
@@ -28,4 +27,4 @@ protected:
     QVector3D position_;
 };
 
-#endif // DRAWABLEOBJECT_H
+#endif

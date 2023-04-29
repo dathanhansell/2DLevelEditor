@@ -1,7 +1,7 @@
 #ifndef MAINWIDGET_H
 #define MAINWIDGET_H
 
-#include "geometryengine.h"
+
 #include "shadermanager.h"
 #include "drawable.h"
 
@@ -31,15 +31,11 @@ protected:
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
-
-    void initShaders();
-    void initTextures();
+    QVector3D screenToWorld(const QVector2D &screenPos);
 
 private:
     ShaderManager shaderManager;
-    GeometryEngine *geometries = nullptr;
     QVector2D prevMousePosition;
-    QOpenGLTexture *texture = nullptr;
     std::vector<Drawable *> drawableObjects;
 
     QMatrix4x4 projection;

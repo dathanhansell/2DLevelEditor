@@ -26,7 +26,13 @@ void TileMesh::setupGeometry()
 
     };
     arrayBuf.bind();
-    arrayBuf.allocate(vertices, 24 * sizeof(VertexData));
+    arrayBuf.allocate(vertices, 4 * sizeof(VertexData));
+
     indexBuf.bind();
-    indexBuf.allocate(indices, 34 * sizeof(GLushort));
+    indexBuf.allocate(indices, 5 * sizeof(GLushort));
+
+}
+
+void TileMesh::draw(){
+    glDrawElements(GL_TRIANGLE_STRIP, 34, GL_UNSIGNED_SHORT, nullptr);
 }

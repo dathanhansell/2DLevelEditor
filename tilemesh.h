@@ -1,6 +1,6 @@
 // cube.h
-#ifndef CUBE_H
-#define CUBE_H
+#ifndef TILEMESH_H
+#define TILEMESH_H
 
 #include "mesh.h"
 
@@ -12,6 +12,7 @@ public:
 
 protected:
     void setupGeometry() override;
+    void draw() override;
 };
 
 #endif // CUBE_H

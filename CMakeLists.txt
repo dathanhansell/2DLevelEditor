@@ -18,17 +18,18 @@ link_directories("C:\\Users\\Dathan\\Code Projects\\box2d\\build\\bin\\Debug")
 set(SOURCE_FILES main.cpp mainwindow.h mainwindow.cpp
 openglscene.h openglscene.cpp
 box2dworld.h box2dworld.cpp
-geometryengine.h geometryengine.cpp
 shadermanager.h shadermanager.cpp
 drawable.h drawable.cpp
-mesh.h tilemesh.h tilemesh.cpp
+mesh.h mesh.cpp tilemesh.h tilemesh.cpp
+gridmesh.h gridmesh.cpp
+
 )
-set(UI_FILES mainwindow.ui)
+
 set(RESOURCE_FILES shaders.qrc textures.qrc)
 
 QT6_ADD_RESOURCES(PROJECT_RESOURCES ${RESOURCE_FILES})
 
-qt_add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${UI_FILES} ${PROJECT_RESOURCES})
+qt_add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${PROJECT_RESOURCES})
 
 
 set_target_properties(2DLevelEditor PROPERTIES

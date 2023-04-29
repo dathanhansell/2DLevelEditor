@@ -1,7 +1,7 @@
 // mesh.h
 #ifndef MESH_H
 #define MESH_H
-
+#include <QOpenGLFunctions>
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
 #include <QVector3D>
@@ -11,7 +11,7 @@ struct VertexData
     QVector3D position;
     QVector2D texCoord;
 };
-class Mesh
+class Mesh : public QOpenGLFunctions
 {
 public:
     Mesh();
@@ -23,7 +23,7 @@ public:
     void bind();
     void release();
 
-    void draw();
+    virtual void draw();
 
 protected:
     virtual void setupGeometry() = 0;

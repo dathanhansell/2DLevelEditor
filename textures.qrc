@@ -1,5 +1,10 @@
 <RCC>
     <qresource prefix="/">
         <file>textures/cube.png</file>
+        <file>textures/white.png</file>
+    </qresource>
+    <qresource prefix="/static">
+        <file>textures/static/tile0.png</file>
+        <file>textures/static/tile1.png</file>
     </qresource>
 </RCC>
