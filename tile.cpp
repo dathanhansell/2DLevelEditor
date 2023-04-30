@@ -1,6 +1,6 @@
 #include "tile.h"
 
-Tile::Tile(Drawable* drawable, b2World* world, const b2Vec2& pos, const b2Vec2& size)
+Tile::Tile(Drawable* drawable, b2World* world, const b2Vec2& pos, const b2Vec2& size, bool hasCollision)
     : drawable(drawable) {
     b2BodyDef bodyDef;
     bodyDef.position.Set(pos.x, pos.y);
@@ -8,13 +8,15 @@ Tile::Tile(Drawable* drawable, b2World* world, const b2Vec2& pos, const b2Vec2& 
     body = world->CreateBody(&bodyDef);
 
     b2PolygonShape box;
-    box.SetAsBox(size.x / 2, size.y / 2);
+    box.SetAsBox(size.x / 2.1, size.y / 2.1);
+    body->SetFixedRotation(true);
+    if (hasCollision) {
+        b2FixtureDef fixtureDef;
+        fixtureDef.shape = &box;
+        fixtureDef.friction = 0.3f;
 
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &box;
-    fixtureDef.friction = 0.3f;
-
-    body->CreateFixture(&fixtureDef);
+        body->CreateFixture(&fixtureDef);
+    }
 }
 
 Tile::~Tile() {
@@ -30,15 +32,19 @@ b2Body* Tile::getBody() const{
     return body;
 }
 
+void Tile::setPosition(QVector2D pos){
+    body->SetTransform({float(pos.x()),float(pos.y())},0);
+    drawable->setPosition(QVector3D(body->GetPosition().x, body->GetPosition().y, 0));
+}
+
 void Tile::update(float deltaTime) {
-    qDebug() << "tile base update";
     if (drawable) {
         drawable->setPosition(QVector3D(body->GetPosition().x, body->GetPosition().y, 0));
     }
 }
 
 void Tile::draw(QMatrix4x4& projection, QMatrix4x4& view) {
-    if (drawable) {
+    if (drawable && visible) {
         drawable->draw(projection, view);
     }
 }
@@ -50,4 +56,8 @@ bool Tile::isCollidingWith(const Tile* other) const {
         }
     }
     return false;
+}
+void Tile::setVisible(bool isVisible) {
+    visible = isVisible;
+    body->SetEnabled(isVisible);
 }

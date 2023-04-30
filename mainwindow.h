@@ -23,10 +23,13 @@ private slots:
     void on_playButton_clicked();
     void on_stopButton_clicked();
 
+
 private:
     QOpenGLWidget *openGLWidget;
     QVBoxLayout *mainLayout;
     QComboBox *blockTypeComboBox;
+    void updateBackgroundColor(const QColor &color);
+
     QListWidget *blockListWidget;
     QPushButton *playButton;
     OpenGLScene *m_openglScene;

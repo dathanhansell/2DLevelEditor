@@ -4,14 +4,14 @@
 TextureManager::TextureManager()
 {}
 
-TextureManager::~TextureManager()
+
+void TextureManager::eraseAll()
 {
     for (auto texture : textures.values())
     {
         delete texture;
     }
 }
-
 QOpenGLTexture* TextureManager::getTexture(const QString& textureName) const
 {
     return textures.value(textureName, nullptr);
@@ -35,7 +35,7 @@ void TextureManager::addTexture(const QString& textureName, const QString& textu
     texture->setMagnificationFilter(QOpenGLTexture::Nearest);
 
     // Add alpha channel settings
-    texture->setFormat(QOpenGLTexture::RGBA8_UNorm);
+    //texture->setFormat(QOpenGLTexture::RGBA8_UNorm);
 
 
     textures.insert(textureName, texture);

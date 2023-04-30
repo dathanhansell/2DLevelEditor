@@ -9,7 +9,7 @@ class TextureManager
 {
 public:
     TextureManager();
-    ~TextureManager();
+    void eraseAll();
 
     QOpenGLTexture* getTexture(const QString& textureName) const;
     void addTexture(const QString& textureName, const QString& texturePath);

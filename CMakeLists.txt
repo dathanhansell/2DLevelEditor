@@ -23,10 +23,9 @@ mesh.h mesh.cpp tilemesh.h tilemesh.cpp
 gridmesh.h gridmesh.cpp
 tile.h tile.cpp interactabletile.h interactabletile.cpp
 playertile.h playertile.cpp
-camera.h camera.cpp
-inputhandler.h inputhandler.cpp
 texturemanager.h texturemanager.cpp
 tilefactory.h tilefactory.cpp
+enemygoomba.h enemygoomba.cpp
 )
 
 set(RESOURCE_FILES shaders.qrc textures.qrc)

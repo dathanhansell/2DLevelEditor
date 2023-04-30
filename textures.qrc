@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>textures/cube.png</file>
         <file>textures/white.png</file>
         <file>textures/mario.png</file>
     </qresource>
@@ -19,8 +18,36 @@
         <file>textures/static/tile1.png</file>
     </qresource>
     <qresource prefix="/interactable">
-        <file>textures/interactable/tile0.png</file>
-        <file>textures/interactable/tile1.png</file>
+        <file>textures/interactable/goomba.png</file>
+        <file>textures/interactable/breakblock.png</file>
+        <file>textures/interactable/coin.png</file>
     </qresource>
-    <qresource prefix="/entities"/>
+    <qresource prefix="/background">
+        <file>textures/background/bushLeft.png</file>
+        <file>textures/background/bushMiddle.png</file>
+        <file>textures/background/bushRight.png</file>
+        <file>textures/background/castleDoorLeft.png</file>
+        <file>textures/background/castleDoorMiddle.png</file>
+        <file>textures/background/castleDoorRight.png</file>
+        <file>textures/background/castleDoorTop.png</file>
+        <file>textures/background/castleParapets.png</file>
+        <file>textures/background/castleWall.png</file>
+        <file>textures/background/castleWall2.png</file>
+        <file>textures/background/cloudBottomLeft.png</file>
+        <file>textures/background/cloudBottomMiddle.png</file>
+        <file>textures/background/cloudBottomRight.png</file>
+        <file>textures/background/cloudTopLeft.png</file>
+        <file>textures/background/cloudTopMiddle.png</file>
+        <file>textures/background/cloudTopRight.png</file>
+        <file>textures/background/hillcenter1.png</file>
+        <file>textures/background/hillcenter2.png</file>
+        <file>textures/background/hillcenter3.png</file>
+        <file>textures/background/hillLeft.png</file>
+        <file>textures/background/hillRight.png</file>
+        <file>textures/background/hillTop.png</file>
+        <file>textures/background/mushroomStalk.png</file>
+        <file>textures/background/mushroomStalkTop.png</file>
+        <file>textures/background/water.png</file>
+        <file>textures/background/waterBody.png</file>
+    </qresource>
 </RCC>

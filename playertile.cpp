@@ -1,4 +1,5 @@
 #include "playertile.h"
+#include "enemygoomba.h"
 
 PlayerTile::PlayerTile(Drawable* drawable, b2World* world, const b2Vec2& pos, const b2Vec2& size)
     : InteractableTile(drawable, world, pos, size)
@@ -20,17 +21,17 @@ PlayerTile::PlayerTile(Drawable* drawable, b2World* world, const b2Vec2& pos, co
     body->CreateFixture(&fixtureDef);
     body->SetEnabled(true);
     body->SetAwake(true);
+    body->SetFixedRotation(true);
 }
 
 void PlayerTile::update(float deltaTime)
 {
-    qDebug() << drawable->getPosition();
     InteractableTile::update(deltaTime);
 
     const float maxSpeed = speed; // Set a max speed for movement
     const float dampingFactor = 3.0f; // Set a damping factor for smooth stopping
     float desiredSpeed = 0.0f;
-    body->SetFixedRotation(true);
+
     if(left)
         desiredSpeed -= maxSpeed;
     if(right)
@@ -54,11 +55,25 @@ void PlayerTile::update(float deltaTime)
         body->SetLinearDamping(0.0f);
     }
 }
+void PlayerTile::reset(){
+    setPosition({0,0});
+}
 
 void PlayerTile::onCollision(const Tile* other)
 {
     if(other != nullptr)
     {
+        if (dynamic_cast<const EnemyGoomba*>(other)) {
+            b2Vec2 relativePosition = other->getBody()->GetPosition() - body->GetPosition();
+
+            if (relativePosition.y > 0) {
+                // Player jumps on Goomba
+                // Handle Goomba death logic (if any)
+            } else {
+                // Player collides with Goomba horizontally
+                setPlayerDead(true);
+            }
+        }
         b2Vec2 relativePosition =  other->getBody()->GetPosition()-body->GetPosition();
 
         // Set friction to 0.0f for both the player and the ground/platform colliders when the player is in mid-air
@@ -75,9 +90,28 @@ void PlayerTile::onCollision(const Tile* other)
     {
         isOnGround = false;
     }
-    qDebug() <<isOnGround;
+}
+void PlayerTile::addPlayerDeathListener(const std::function<void()>& listener)
+{
+    playerDeathListeners.push_back(listener);
 }
 
+void PlayerTile::setPlayerDead(bool isDead)
+{
+    if (playerIsDead != isDead) {
+        playerIsDead = isDead;
+        if (isDead) {
+            onPlayerDeath();
+        }
+    }
+}
+
+void PlayerTile::onPlayerDeath()
+{
+    for (auto& listener : playerDeathListeners) {
+        listener();
+    }
+}
 void PlayerTile::handleKeyEvent(QKeyEvent *event) {
 
     bool pressed = event->type() == QEvent::KeyPress;

@@ -10,6 +10,11 @@ public:
     void update(float deltaTime) override;
     void onCollision(const Tile* other) override;
     void handleKeyEvent(QKeyEvent *event);
+    // Add player death event subscribers
+    void addPlayerDeathListener(const std::function<void()>& listener);
+    void reset() override;
+    // Used to handle player death
+    void setPlayerDead(bool isDead);
 private slots:
     void onKeyPressed(int key);
     void onKeyReleased(int key);
@@ -17,7 +22,10 @@ private slots:
 private:
     float speed = 5.0f;
     bool left = false, right = false, jump = false;
+    std::vector<std::function<void()>> playerDeathListeners;
+    bool playerIsDead;
 
+    void onPlayerDeath();
 
     bool isOnGround = false;
 };

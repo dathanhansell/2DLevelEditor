@@ -7,9 +7,6 @@ TileFactory::TileFactory(b2World *world,TextureManager* tmanager, ShaderManager*
     loadTextures();
 }
 TileFactory::~TileFactory(){
-    delete textureManager;
-    delete shaderManager;
-    delete box2dWorld;
 }
 
 void TileFactory::loadTextures()
@@ -21,35 +18,18 @@ void TileFactory::loadTextures()
     loadTextureFromPrefix("background");
 }
 
-Tile *TileFactory::createTile(const QString &textureName, const b2Vec2 &pos)
+Tile *TileFactory::createTile(const QString &textureName, const b2Vec2 &pos, bool hasCollision)
 {
     TileMesh *tileMesh = new TileMesh();
 
     Drawable *drawable = new Drawable(shaderManager->getShader("texture"), textureManager->getTexture(textureName), tileMesh);
     b2Vec2 tileSize(1, 1);
-
-    return new Tile(drawable, box2dWorld, pos, tileSize);
-}
-
-InteractableTile *TileFactory::createInteractableTile(const QString &textureName, const b2Vec2 &pos, InteractableType type)
-{
-    TileMesh *tileMesh = new TileMesh();
-
-    Drawable *drawable = new Drawable(shaderManager->getShader("texture"), textureManager->getTexture(textureName), tileMesh);
-    b2Vec2 tileSize(1, 1);
-
-    //implement custom behavior for InteractableTile based on the given InteractableType
-    return new InteractableTile(drawable, box2dWorld, pos, tileSize);
-}
-
-PlayerTile *TileFactory::createPlayerTile(const QString &textureName, const b2Vec2 &pos)
-{
-    TileMesh *tileMesh = new TileMesh();
-
-    Drawable *drawable = new Drawable(shaderManager->getShader("texture"), textureManager->getTexture(textureName), tileMesh);
-    b2Vec2 tileSize(1, 1);
-
-    return new PlayerTile(drawable, box2dWorld, pos, tileSize);
+    if(textureName == "mario")
+        return new PlayerTile(drawable, box2dWorld, pos, tileSize);
+    else if(textureName == "goomba")
+        return new EnemyGoomba(drawable, box2dWorld, pos, tileSize);
+    else
+        return new Tile(drawable, box2dWorld, pos, tileSize,hasCollision);
 }
 
 void TileFactory::loadTextureFromPrefix(const QString &prefix)

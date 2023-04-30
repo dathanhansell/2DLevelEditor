@@ -17,6 +17,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+
     QWidget *centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
 
@@ -29,20 +30,19 @@ MainWindow::MainWindow(QWidget *parent)
     // Add block types to the combo box
     blockTypeComboBox->addItem("Static");
     blockTypeComboBox->addItem("Interactable");
-    blockTypeComboBox->addItem("Entity");
     blockTypeComboBox->addItem("Background");
     sidebarLayout->addWidget(blockTypeComboBox);
 
     blockListWidget = new QListWidget(sidebar);
     sidebarLayout->addWidget(blockListWidget);
 
-    this->on_blockTypeComboBox_currentIndexChanged(0);
+
 
     QSurfaceFormat format;
     format.setDepthBufferSize(24);
     QSurfaceFormat::setDefaultFormat(format);
     m_openglScene = new OpenGLScene(this);
-
+    this->on_blockTypeComboBox_currentIndexChanged(0);
     layout->addWidget(sidebar, 1);
     layout->addWidget(m_openglScene, 4);
 
@@ -102,22 +102,31 @@ void MainWindow::on_blockTypeComboBox_currentIndexChanged(int index)
     switch (index) {
     case 0:
         loadTileTypeItems("static",blockListWidget);
+        m_openglScene->setBackgroundTileSelected(false);
         break;
     case 1:
         loadTileTypeItems("interactable",blockListWidget);
+        m_openglScene->setBackgroundTileSelected(false);
         break;
     case 2:
-        loadTileTypeItems("entities",blockListWidget);
-        break;
-    case 3:
-        loadTileTypeItems("background",blockListWidget);
+        loadTileTypeItems("background", blockListWidget);
+        m_openglScene->setBackgroundTileSelected(true);
         break;
     default:
+
         break;
+
     }
     //m_openglScene->setSelectedBlockType(index);
 }
-
+void MainWindow::updateBackgroundColor(const QColor &color)
+{
+    QPalette pal = this->palette();
+    pal.setColor(QPalette::Window, color);
+    this->setAutoFillBackground(true);
+    this->setPalette(pal);
+    this->update();
+}
 
 void MainWindow::on_blockListWidget_itemClicked(QListWidgetItem *item)
 {
@@ -125,12 +134,13 @@ void MainWindow::on_blockListWidget_itemClicked(QListWidgetItem *item)
     m_openglScene->setSelectedTexture(item->text());
 }
 
-void MainWindow::on_playButton_clicked()
-{
-    // Implement play functionality here
+void MainWindow::on_playButton_clicked() {
+    m_openglScene->setMode(Mode::Play);
+    updateBackgroundColor(QColor("gray"));
+
 }
 
-void MainWindow::on_stopButton_clicked()
-{
-    // Implement stop functionality here
+void MainWindow::on_stopButton_clicked() {
+    m_openglScene->setMode(Mode::Edit);
+    updateBackgroundColor(QColor("white"));
 }
