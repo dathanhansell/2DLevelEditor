@@ -29,7 +29,7 @@ void PlayerTile::update(float deltaTime)
     InteractableTile::update(deltaTime);
 
     const float maxSpeed = speed; // Set a max speed for movement
-    const float dampingFactor = 3.0f; // Set a damping factor for smooth stopping
+    const float dampingFactor = .5f; // Set a damping factor for smooth stopping
     float desiredSpeed = 0.0f;
 
     if(left)
@@ -38,13 +38,13 @@ void PlayerTile::update(float deltaTime)
         desiredSpeed += maxSpeed;
 
     float velocityChange = desiredSpeed - body->GetLinearVelocity().x;
-    float impulse = body->GetMass() * velocityChange;
+    float impulse =  velocityChange;
 
     body->ApplyLinearImpulse(b2Vec2(impulse, 0.0f), body->GetWorldCenter(), true);
 
     if(jump && isOnGround) {
         isOnGround = false;
-        float jumpForce = speed * 35;
+        float jumpForce = speed * 100;
         body->ApplyForceToCenter(b2Vec2(0.0, jumpForce), true);
     }
 

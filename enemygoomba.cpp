@@ -8,19 +8,20 @@ EnemyGoomba::EnemyGoomba(Drawable* drawable, b2World* world, const b2Vec2& pos, 
     body->DestroyFixture(body->GetFixtureList());
 
     b2PolygonShape box;
-    box.SetAsBox(size.x / 2, size.y / 2);
+    box.SetAsBox(size.x / 2.1f, size.y / 2.1f);
 
     b2FixtureDef fixtureDef;
     fixtureDef.shape = &box;
     fixtureDef.density = 1.0f;
-    fixtureDef.friction = 0.3f;
+    fixtureDef.friction = 0;
 
     body->CreateFixture(&fixtureDef);
     body->SetEnabled(true);
     body->SetAwake(true);
     body->SetFixedRotation(true);
-
-    speed = 1.0f;
+    body->SetLinearDamping(0.0f);
+    body->SetAngularDamping(0.0f);
+    speed = 2.0f;
     direction = 1;
 }
 
@@ -29,10 +30,10 @@ void EnemyGoomba::update(float deltaTime)
     InteractableTile::update(deltaTime);
 
     float desiredSpeed = direction * speed;
-    float velocityChange = desiredSpeed - body->GetLinearVelocity().x;
-    float impulse = body->GetMass() * velocityChange;
 
-    body->ApplyLinearImpulse(b2Vec2(impulse, 0.0f), body->GetWorldCenter(), true);
+    float velocityChange = desiredSpeed - body->GetLinearVelocity().x;
+    float impulse = velocityChange;
+    body->ApplyLinearImpulse(b2Vec2(impulse,0), body->GetWorldCenter(), true);
 }
 
 void EnemyGoomba::onCollision(const Tile* other)
@@ -42,22 +43,25 @@ void EnemyGoomba::onCollision(const Tile* other)
     {
         b2Vec2 relativePosition = other->getBody()->GetPosition() - body->GetPosition();
 
-        if (relativePosition.y > 0)
+        if (relativePosition.y > .9f)
         {
-            // The player is above the Goomba, so the Goomba is squished
             disappear();
+        }
+        else{
+            //playerdie
         }
     }
     else if (other != nullptr)
     {
-        b2Vec2 relativePosition = other->getBody()->GetPosition() - body->GetPosition();
-        float tolerance = 0.1f; // Add a tolerance to avoid detecting ground as wall due to floating point errors
+        b2Vec2 relativePosition =   other->getBody()->GetPosition()-body->GetPosition();
+        float tolerance = 0.01f;
 
-        // Check if the collision is in the horizontal direction
-        if (abs(relativePosition.y) > tolerance)
+
+        if (relativePosition.y > tolerance)
         {
-            // Handle collision with the platform or other objects
+
             direction *= -1;
+
         }
     }
 }

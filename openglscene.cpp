@@ -19,6 +19,7 @@ OpenGLScene::~OpenGLScene() {
     delete box2dWorld;
     delete tileFactory;
     textureManager.eraseAll();
+    delete contactListener;
     doneCurrent();
 }
 void OpenGLScene::setMode(Mode mode) {
@@ -89,6 +90,10 @@ void OpenGLScene::removeTile(QVector2D pos){
         Tile* tile = *it;
         QVector2D otherpos ={tile->getDrawable()->getPosition().x(),tile->getDrawable()->getPosition().y()};
         if ((pos- otherpos).length() < 0.5) {
+            InteractableTile* interactableTile = dynamic_cast<InteractableTile*>(tile);
+            if (interactableTile != nullptr) {
+                interactableTileList.erase(std::remove(interactableTileList.begin(), interactableTileList.end(), interactableTile), interactableTileList.end());
+            }
             delete tile;
             it = tileList.erase(it);
 
@@ -190,19 +195,11 @@ void OpenGLScene::updateScene() {
 
 
     if (currentMode == Mode::Play) {
-        box2dWorld->Step(deltaTime, 6, 4);
+
         for (Tile* tile: tileList) {
             tile->update(deltaTime);
         }
-        for (Tile* tile: tileList) {
-            if (InteractableTile* itile = dynamic_cast<InteractableTile*>(tile)) {
-                for (Tile* other: tileList) {
-                    if (tile != other && tile->isCollidingWith(other)) {
-                        itile->onCollision(other);
-                    }
-                }
-            }
-        }
+        box2dWorld->Step(deltaTime, 6, 4);
         // Camera logic
         if (playerTile) {
             QVector2D playerPosition(playerTile->getDrawable()->getPosition().x(), playerTile->getDrawable()->getPosition().y());
@@ -234,6 +231,8 @@ void OpenGLScene::initializeGL() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     box2dWorld = new b2World(b2Vec2(0, -9.81));
+    contactListener = new ContactListener();
+    box2dWorld->SetContactListener(contactListener);
     b2BodyDef colliderDef;
     colliderDef.position.Set(leftBoundary+ cameraPosition.x(),0);
     leftEdgeCollider = box2dWorld->CreateBody(&colliderDef);
@@ -242,7 +241,7 @@ void OpenGLScene::initializeGL() {
     b2FixtureDef colliderFixture;
     colliderFixture.shape = &colliderShape;
     leftEdgeCollider->CreateFixture(&colliderFixture);
-
+    debugGraphics = new DebugGraphics(&textureManager,&shaderManager);
 
     TileMesh *tilemesh = new TileMesh();
     GridMesh *gridmesh = new GridMesh();
@@ -284,11 +283,13 @@ void OpenGLScene::paintGL() {
 
     QMatrix4x4 view;
     view.translate(-cameraPosition);
-
+    debugGraphics->setMatrices(projection,view);
     if (currentMode == Mode::Edit)
         grid->draw(projection,view);
     for (auto &obj : tileList)
     {
+
         obj->draw(projection, view);
+
     }
 }

@@ -1,3 +1,5 @@
+#ifndef TILE_H
+#define TILE_H
 #include "drawable.h"
 #include <Box2D.h>
 
@@ -21,3 +23,4 @@ protected:
     Drawable* drawable;
     b2Body* body;
 };
+#endif // TILE_H

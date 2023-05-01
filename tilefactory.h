@@ -1,6 +1,8 @@
 #pragma once
 #include "playertile.h"
 #include "enemygoomba.h"
+#include "coinTile.h"
+#include "breakblock.h"
 #include "texturemanager.h"
 #include "shadermanager.h"
 #include <Box2D.h>

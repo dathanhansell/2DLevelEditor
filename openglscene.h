@@ -15,8 +15,9 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 #include <QTimer>
+#include "contactlistener.h"
 //#include "camera.h"
-
+#include "debuggraphics.h"
 #include "texturemanager.h"
 #include "tilefactory.h"
 enum class Mode { Edit, Play };
@@ -49,6 +50,8 @@ protected:
 private slots:
     void updateScene();
 private:
+    DebugGraphics* debugGraphics;
+    ContactListener* contactListener;
     float leftBoundary = 0;
     b2Body* leftEdgeCollider;
     bool isPositionOccupied(QVector2D pos);

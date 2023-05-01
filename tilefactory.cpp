@@ -28,6 +28,10 @@ Tile *TileFactory::createTile(const QString &textureName, const b2Vec2 &pos, boo
         return new PlayerTile(drawable, box2dWorld, pos, tileSize);
     else if(textureName == "goomba")
         return new EnemyGoomba(drawable, box2dWorld, pos, tileSize);
+    else if(textureName == "coin")
+        return new CoinTile(drawable, box2dWorld, pos, tileSize);
+    else if(textureName == "breakblock")
+        return new BreakBlock(drawable, box2dWorld, pos, tileSize);
     else
         return new Tile(drawable, box2dWorld, pos, tileSize,hasCollision);
 }

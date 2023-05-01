@@ -26,6 +26,10 @@ playertile.h playertile.cpp
 texturemanager.h texturemanager.cpp
 tilefactory.h tilefactory.cpp
 enemygoomba.h enemygoomba.cpp
+contactlistener.h contactlistener.cpp
+debuggraphics.h debuggraphics.cpp
+coinTile.h coinTile.cpp
+breakblock.h breakblock.cpp
 )
 
 set(RESOURCE_FILES shaders.qrc textures.qrc)

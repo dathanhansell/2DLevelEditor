@@ -4,7 +4,8 @@ Tile::Tile(Drawable* drawable, b2World* world, const b2Vec2& pos, const b2Vec2& 
     : drawable(drawable) {
     b2BodyDef bodyDef;
     bodyDef.position.Set(pos.x, pos.y);
-    bodyDef.type = b2_dynamicBody;
+    bodyDef.type = b2_staticBody;
+    bodyDef.userData.pointer = reinterpret_cast<uintptr_t>(this);
     body = world->CreateBody(&bodyDef);
 
     b2PolygonShape box;
@@ -34,12 +35,12 @@ b2Body* Tile::getBody() const{
 
 void Tile::setPosition(QVector2D pos){
     body->SetTransform({float(pos.x()),float(pos.y())},0);
-    drawable->setPosition(QVector3D(body->GetPosition().x, body->GetPosition().y, 0));
+    drawable->setPosition({body->GetPosition().x,body->GetPosition().y});
 }
 
 void Tile::update(float deltaTime) {
     if (drawable) {
-        drawable->setPosition(QVector3D(body->GetPosition().x, body->GetPosition().y, 0));
+        drawable->setPosition({body->GetPosition().x,body->GetPosition().y});
     }
 }
 
