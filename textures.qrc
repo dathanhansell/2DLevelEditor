@@ -31,7 +31,6 @@
         <file>textures/background/castleDoorRight.png</file>
         <file>textures/background/castleDoorTop.png</file>
         <file>textures/background/castleParapets.png</file>
-        <file>textures/background/castleWall.png</file>
         <file>textures/background/castleWall2.png</file>
         <file>textures/background/cloudBottomLeft.png</file>
         <file>textures/background/cloudBottomMiddle.png</file>
@@ -49,5 +48,6 @@
         <file>textures/background/mushroomStalkTop.png</file>
         <file>textures/background/water.png</file>
         <file>textures/background/waterBody.png</file>
+        <file>textures/background/castleWall.png</file>
     </qresource>
 </RCC>
